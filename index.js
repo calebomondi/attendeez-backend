@@ -8,7 +8,7 @@ const port = process.env.PORT;
 
 //middleware
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: ['http://localhost:5173','https://attendeez-tutor.vercel.app']
 }))
 app.use(express.json())
 
