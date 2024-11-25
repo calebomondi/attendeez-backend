@@ -85,16 +85,13 @@ const getDayNumber = () => {
 //get Current Time
 const getCurrentTime = () => {
   const now = new Date();
-  
-  let hours = now.getHours();
-  let minutes = now.getMinutes();
-  let seconds = now.getSeconds();
-  
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
-  
-  return `${hours}:${minutes}:${seconds}`
+  return now.toLocaleTimeString('en-US', { 
+      timeZone: 'Africa/Nairobi',
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+  });
 }
 
 //Filter To Get classes That Are On Today
@@ -107,6 +104,7 @@ const todaysClasses = (data) => {
 //Give Today's Classes Tags
 const giveTags = (data) => {
   const currentTime = getCurrentTime();
+  console.log(`currentTime: ${currentTime}`)
 
   data.forEach(lesson => {
     if(currentTime >= lesson.start_time && currentTime < lesson.end_time){
