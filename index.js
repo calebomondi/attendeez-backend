@@ -261,7 +261,11 @@ app.get('/in-attendance', async (req,res) => {
 
     if (error) throw error;
 
+    if(data.length == 0)
+      res.json({started: false});
+
     res.json(data[0]);
+
     
   } catch(error) {
     res.status(500).json({error: error.message});
