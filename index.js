@@ -335,7 +335,7 @@ app.post('/upload-single', async (req,res) => {
 
     res.json({ 
       success: true, 
-      message: `${studentId} added!`,
+      message: `${studentId} Added To Attendance List!`,
     })
   } catch (error) {
     res.status(400).json({
