@@ -259,7 +259,10 @@ app.get('/in-attendance', async (req,res) => {
       .eq('class_session_id', sessionId)
       .eq('student_id',studentId);
 
-    if (error) throw error;
+      if (error) {
+        console.log('inAttendance error!')
+        throw error
+      }
 
     if(data.length == 0)
       res.json({started: false});
@@ -269,7 +272,7 @@ app.get('/in-attendance', async (req,res) => {
     
   } catch(error) {
     res.status(500).json({error: error.message});
-    console.log(`server-error-SI: ${error}`);
+    console.log(`server-error-SI: ${error.message}`);
   }
 })
 
@@ -560,14 +563,17 @@ const getSessionId = async (unitId) => {
     .eq('session_date', `${today}`)
     .single();
 
-    if (error) throw error
+    if (error) {
+      console.log('getSessionId error!')
+      throw error
+    }
 
-    console.log(`session-data-CT: ${data}`)
+    console.log(`session-data-CT-: ${data}`)
 
     return data.id
 
   } catch (error) {
-    console.log(`getsessionId: ${error}`)
+    console.log(`getsessionId: ${error.message}`)
   }
 }
 
