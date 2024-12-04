@@ -251,25 +251,26 @@ app.get('/in-attendance', async (req,res) => {
   const {unitId,studentId} = req.query
 
   const sessionId = await getSessionId(unitId)
+  console.log(`sessionId -> ${sessionId}`)
+
+  if(sessionId == 0)
+    return res.json({started: false});
 
   try {
     const { data, error } = await supabase
       .from('amattending')
       .select(`started`)
       .eq('class_session_id', sessionId)
-      .eq('student_id',studentId);
+      .eq('student_id',studentId)
+      .limit(1);
 
       if (error) {
-        console.log('inAttendance error!')
+        console.log('inAttendance error!');
         throw error
       }
 
-    if(data.length == 0)
-      res.json({started: false});
+    res.json(data[0] || {started: false});
 
-    res.json(data[0]);
-
-    
   } catch(error) {
     res.status(500).json({error: error.message});
     console.log(`server-error-SI: ${error.message}`);
@@ -624,9 +625,12 @@ app.get('/end-before-time', async (req,res) => {
     .from('classsessions')
     .select(`session_end`)
     .eq('unit_id',unitId)
-    .eq('session_date', currentDate());
+    .eq('session_date', currentDate())
 
     if (error) throw error
+
+    if(!data || data.length === 0 || data[0].end_time === null)
+      res.json({session_end:false});
 
     res.json(data[0])
 
@@ -638,7 +642,12 @@ app.get('/end-before-time', async (req,res) => {
 app.get('/check-session-end', async (req,res) => {
   const {unitId} = req.query
 
+  if (!unitId) {
+    return res.status(400).json({ error: 'Unit ID is required' })
+  }
+
   const _date = currentDate()
+  console.log(`date --> ${_date}`)
     
   try {
     const {data, error} = await supabase
