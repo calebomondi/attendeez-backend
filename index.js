@@ -158,7 +158,7 @@ app.get('/class-status', async (req, res) => {
 
 //get current date
 const currentDate = () => {
-  const today = new Date();
+  const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Nairobi' }));
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
@@ -561,11 +561,16 @@ const getSessionId = async (unitId) => {
     .select(`id`)
     .eq('unit_id', `${unitId}`)
     .eq('session_date', `${today}`)
-    .single();
+    .limit(1);
 
     if (error) {
       console.log('getSessionId error!')
       throw error
+    }
+
+    if(data.length == 0) {
+      console.log('No session found for this unit and date');
+      return 0;
     }
 
     console.log(`session-data-CT-: ${data}`)
