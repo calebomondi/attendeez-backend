@@ -630,7 +630,7 @@ app.get('/end-before-time', async (req,res) => {
     if (error) throw error
 
     if(!data || data.length === 0 || data[0].end_time === null)
-      res.json({session_end:false});
+      return res.json({session_end:false});
 
     res.json(data[0])
 
