@@ -574,9 +574,9 @@ const getSessionId = async (unitId) => {
       return 0;
     }
 
-    console.log(`session-data-CT-: ${data}`)
+    console.log(`session-data-CT-: ${data[0].id}`)
 
-    return data.id
+    return data[0].id
 
   } catch (error) {
     console.log(`getsessionId: ${error.message}`)
