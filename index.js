@@ -203,7 +203,6 @@ app.get('/student-info', async (req,res) => {
       .single();
 
     if (error) throw error;
-
     res.json(data);
     
   } catch(error) {
