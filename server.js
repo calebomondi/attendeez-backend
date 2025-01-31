@@ -4,6 +4,8 @@ import cors from 'cors';
 
 import studentRouter from './routes/studentRoutes.js';
 import classRouter from './routes/classRoutes.js';
+import tutorRouter from './routes/tutorRoutes.js';
+import homeRouter from './routes/home.js';
 
 config();
 
@@ -17,8 +19,10 @@ app.use(cors({
 app.use(express.json())
 
 //routes
+app.use('/', homeRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/class', classRouter);
+app.use('/api/tutor', tutorRouter);
 
 //port
 app.listen(port, () => {

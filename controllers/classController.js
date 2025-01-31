@@ -1,6 +1,7 @@
 import { supabase } from "../database/db.js";
-import { todaysClasses, giveTags } from "../utils/utils.js";
+import { todaysClasses, giveTags, currentDate } from "../utils/utils.js";
 
+//controller functions
 export const classStatus = async (req, res) => {
     try {
       const {data} = await supabase
@@ -61,4 +62,94 @@ export const timetable = async (req,res) => {
         res.status(500).json({error: error.message});
         console.log(`server-error-TT: ${error}`);
     }
+}
+
+export const endBeforeTime = async (req,res) => {
+  const {unitId} = req.query
+
+  try {
+    const {data, error} = await supabase
+    .from('classsessions')
+    .select(`session_end`)
+    .eq('unit_id',unitId)
+    .eq('session_date', currentDate())
+
+    if (error) throw error
+
+    if(!data || data.length === 0 || data[0].end_time === null)
+      return res.json({session_end:false});
+
+    res.json(data[0])
+
+  } catch (error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+export const checkSessionEnd = async (req,res) => {
+  const {unitId} = req.query
+
+  if (!unitId) {
+    return res.status(400).json({ error: 'Unit ID is required' })
+  }
+
+  const _date = currentDate()
+    
+  try {
+    const {data, error} = await supabase
+    .from('classsessions')
+    .select(`end_time`)
+    .eq('unit_id',unitId)
+    .eq('session_date', _date);
+
+    if (error) throw error
+
+    if(!data || data.length === 0 || data[0].end_time === null)
+      return res.json({end_time:'',session_end:false, date:_date})
+
+    res.json({end_time:data[0].end_time, session_end:true, date:_date})
+  } catch (error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+export const sessionStarted = async (req,res) => {
+  const {unitId} = req.query;
+
+  try {
+    const {data, error} = await supabase
+    .from('classsessions')
+    .select(`id,session_end`)
+    .eq('unit_id',unitId)
+    .eq('session_date', currentDate());
+
+    if (error) throw error
+
+    if(!data || data.length === 0)
+      return res.json({"id":0,"session_end":false})
+
+    res.json({"id":data[0].id,"session_end":data[0].session_end})
+
+  } catch (error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+export const activeSession = async (req,res) => {
+  const {unitId} = req.query;
+
+  try {
+    const {data, error} = await supabase
+    .from('classsessions')
+    .select(`session_end`)
+    .eq('unit_id',unitId)
+    .eq('session_date', currentDate());
+
+    if (error) throw error
+
+    res.json(data[0])
+
+  } catch (error) {
+    res.status(500).json({error: error.message});
+  }
 }

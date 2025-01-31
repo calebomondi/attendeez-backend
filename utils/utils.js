@@ -58,6 +58,7 @@ export const currentDate = () => {
   return `${year}-${month}-${day}`;
 }
 
+//check class status
 export const checkClassStatus = (data,teacher_id) => {
     const currentTime = getCurrentTime();
 
@@ -80,11 +81,13 @@ export const checkClassStatus = (data,teacher_id) => {
 
     return myLesson
 }
-  
+
+//sort students by attendance descending order
 export const sortStudentsByAttendance = (studentsArray) => {
     return studentsArray.sort((a, b) => b.attended_sessions - a.attended_sessions);
 }
 
+//get class session id
 export const getSessionId = async (unitId) => {
     try {
       const today = currentDate();
