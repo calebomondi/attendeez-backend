@@ -19,10 +19,10 @@ app.use(cors({
 app.use(express.json())
 
 //routes
-app.use('/', homeRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/class', classRouter);
 app.use('/api/tutor', tutorRouter);
+app.use('/api', homeRouter);
 
 //port
 app.listen(port, () => {
