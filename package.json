@@ -8,9 +8,9 @@
     "start": "nodemon index"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kaleb Mokua",
   "license": "ISC",
-  "description": "ATTENDEEZ backend",
+  "description": "ATTENDEEZ Backend Application",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "cors": "^2.8.5",
