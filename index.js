@@ -6,6 +6,7 @@ import studentRouter from './routes/studentRoutes.js';
 import classRouter from './routes/classRoutes.js';
 import tutorRouter from './routes/tutorRoutes.js';
 import homeRouter from './routes/home.js';
+import adminRouter from './routes/adminRouter.js';
 
 config();
 
@@ -22,6 +23,7 @@ app.use(express.json())
 app.use('/api/student', studentRouter);
 app.use('/api/class', classRouter);
 app.use('/api/tutor', tutorRouter);
+app.use('/api/admin',adminRouter);
 app.use('/api', homeRouter);
 
 //port
