@@ -33,14 +33,21 @@ export const uploadStudents = async (req, res) => {
 }
 
 export const enroll = async (req, res) => {
-    try {
-        const { data, course } = req.body;
-        console.log('Unit: ', course);
-        console.log('Received data:', JSON.stringify(data));
+    const { data, course } = req.body;
 
-        res.status(200).json({ message: 'Upload successful', data });
+    try {
+        const {error} = await supabase
+        .from('enrollments')
+        .insert(data.map(row => ({
+            student_id: row.student_id,
+            course_id: course
+        })))
+
+        if (error) throw error
+
+        res.status(200).json({ message: 'Enrollment successful'});
     } catch (error) {
-        console.error('Error in uploadTeachers:', error);
-        res.status(500).json({ message: 'Upload failed', error: error.message });
+        console.error('Error during enrollment:', error);
+        res.status(500).json({ message: 'Enrollment failed', error: error.message });
     }
 }
