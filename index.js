@@ -24,7 +24,7 @@ app.use('/api/student', studentRouter);
 app.use('/api/class', classRouter);
 app.use('/api/tutor', tutorRouter);
 app.use('/api/admin',adminRouter);
-app.use('/api', homeRouter);
+app.use('/', homeRouter);
 
 //port
 app.listen(port, () => {
