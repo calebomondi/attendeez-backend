@@ -52,6 +52,7 @@ export const joinSession = async (req,res) => {
     const sessionId = await getSessionId(unitId)
   
     try {
+      
       const {data, error} = await supabase
       .from('amattending')
       .insert([
@@ -61,7 +62,7 @@ export const joinSession = async (req,res) => {
           started: true
         }
       ])
-      .select()
+      .select();
   
       if (error) {
         console.log(`join-session: ${error}`)
@@ -85,7 +86,6 @@ export const inAttendance = async (req,res) => {
     const {unitId,studentId} = req.query
   
     const sessionId = await getSessionId(unitId)
-    console.log(`sessionId -> ${sessionId}`)
   
     if(sessionId == 0)
       return res.json({started: false});

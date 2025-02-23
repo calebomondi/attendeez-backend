@@ -1,3 +1,5 @@
+import { supabase } from "../database/db.js";
+
 //get Day Number
 export const getDayNumber = () => {
     const date = new Date();
@@ -108,8 +110,6 @@ export const getSessionId = async (unitId) => {
         console.log('No session found for this unit and date');
         return 0;
       }
-  
-      console.log(`session-data-CT-: ${data[0].id}`)
   
       return data[0].id
   
