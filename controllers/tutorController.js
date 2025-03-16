@@ -101,22 +101,22 @@ export const myclassesToday = async (req,res) => {
   }
 
 export const attendanceStats = async (req,res) => {
-    const unit_id = req.query.unit_id
-    try {
-      const { data, error } = await supabase
-      .rpc('get_attendance_stats', { p_unit_id: unit_id })
-  
-      if(error) throw error
-  
-      console.log(`server-response-students: ${data}`)
-  
-      res.json(sortStudentsByAttendance(data))
-  
-    } catch(error) {
-      res.status(500).json({error: error.message});
-      console.log(`server-error-MCA: ${error}`);
-    }
+  const unit_id = req.query.unit_id
+  try {
+    const { data, error } = await supabase
+    .rpc('get_attendance_stats', { p_unit_id: unit_id })
+
+    if(error) throw error
+
+    console.log(`server-response-students: ${data}`)
+
+    res.json(sortStudentsByAttendance(data))
+
+  } catch(error) {
+    res.status(500).json({error: error.message});
+    console.log(`server-error-MCA: ${error}`);
   }
+}
 
 export const attendanceSummary = async (req,res) => {
     const unit_id = req.query.unit_id
@@ -190,3 +190,41 @@ export const startClassSession = async (req,res) => {
       })
     }
   }
+
+export const sessionAttendance = async (req, res) => {
+  const {unit_id} = req.query;
+
+  try {
+    // Run both queries in parallel
+    const [sessionResult, studentsResult] = await Promise.all([
+      supabase.from("classsessions").select("id, unit_id, session_date"),
+      supabase.from("attendance").select("class_session_id, student_id")
+    ]);
+    
+    // Destructure the results
+    const { data: sessions, error: ses } = sessionResult;
+    const { data: attendanceRecords, error: stud } = studentsResult;
+    
+    // Check for errors
+    if (ses) throw ses;
+    if (stud) throw stud;
+    
+    // Map through sessions and add students array to each
+    const enhancedSessions = sessions.map(session => {
+      // Filter students where class_session_id matches current session id
+      const sessionStudents = attendanceRecords
+        .filter(record => record.class_session_id === session.id)
+        .map(record => record.student_id);
+      
+      // Return session object with added students array
+      return {
+        ...session,
+        students: sessionStudents
+      };
+    });
+
+    res.status(200).json({ enhancedSessions })
+  } catch (error) {
+    res.status(500).json({message: "Failed to fetch session attendance!"})
+  }
+}

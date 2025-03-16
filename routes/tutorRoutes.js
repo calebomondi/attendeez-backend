@@ -1,5 +1,14 @@
 import express from 'express';
-import { attendanceStats, attendanceSummary, confirmedToday, finishClassSession, getTeacherInfo, myclassesToday, startClassSession } from '../controllers/tutorController.js';
+import { 
+    attendanceStats, 
+    attendanceSummary, 
+    confirmedToday, 
+    finishClassSession, 
+    getTeacherInfo, 
+    myclassesToday, 
+    startClassSession,
+    sessionAttendance
+} from '../controllers/tutorController.js';
 
 const tutorRouter = express.Router();
 
@@ -9,6 +18,8 @@ tutorRouter.route('/finish-classsession').put(finishClassSession);
 tutorRouter.route('/myclasses-today').get(myclassesToday);
   
 tutorRouter.route('/attendance-stats').get(attendanceStats)
+
+tutorRouter.route('/session-attendance').get(sessionAttendance)
   
 tutorRouter.route('/attendance-summary').get(attendanceSummary)
 
