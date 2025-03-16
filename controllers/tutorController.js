@@ -195,21 +195,19 @@ export const sessionAttendance = async (req, res) => {
   const {unit_id} = req.query;
 
   try {
-    // Run both queries in parallel
-    const [sessionResult, studentsResult] = await Promise.all([
-      supabase.from("classsessions").select("id, unit_id, session_date"),
-      supabase.from("attendance").select("class_session_id, student_id")
-    ]);
+    const { data: sessions, error: ses } = await supabase
+      .from("classsessions")
+      .select("id, session_date")
+      .eq("unit_id", unit_id);
     
-    // Destructure the results
-    const { data: sessions, error: ses } = sessionResult;
-    const { data: attendanceRecords, error: stud } = studentsResult;
-    
-    // Check for errors
     if (ses) throw ses;
-    if (stud) throw stud;
+
+    const { data: attendanceRecords, error: stud } = await supabase
+      .from("attendance")
+      .select("class_session_id, student_id");
     
-    // Map through sessions and add students array to each
+    if (stud) throw stud;
+
     const enhancedSessions = sessions.map(session => {
       // Filter students where class_session_id matches current session id
       const sessionStudents = attendanceRecords
@@ -222,8 +220,9 @@ export const sessionAttendance = async (req, res) => {
         students: sessionStudents
       };
     });
-
-    res.status(200).json({ enhancedSessions })
+    
+    res.status(200).json(enhancedSessions)
+    
   } catch (error) {
     res.status(500).json({message: "Failed to fetch session attendance!"})
   }
